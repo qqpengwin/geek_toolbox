@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="description" content="程序员专属灵感实验室｜代码情书·Bug运势·变量命名｜一键生成趣味分享卡片">
+    <title>码上灵 · 开发者玄学工具箱</title>
+    <!-- Font Awesome 6 (免费图标库) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Google Fonts: 增强字体质感 -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+            background: linear-gradient(145deg, #f0f2f5 0%, #e6e9f0 100%);
+            color: #1e2a3a;
+            padding: 1.5rem;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* 头部区域 */
+        .hero {
+            text-align: center;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+        .hero h1 {
+            font-size: 2.8rem;
+            background: linear-gradient(135deg, #3B82F6, #8B5CF6, #EC4899);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            letter-spacing: -0.5px;
+            font-weight: 700;
+        }
+        .hero p {
+            color: #4a5568;
+            margin-top: 0.5rem;
+            font-size: 1.1rem;
+        }
+        .hero-badge {
+            display: inline-block;
+            background: rgba(59,130,246,0.15);
+            backdrop-filter: blur(4px);
+            border-radius: 40px;
+            padding: 0.3rem 1rem;
+            font-size: 0.8rem;
+            color: #2563eb;
+            margin-top: 0.8rem;
+        }
+
+        /* 广告位样式 (与之前类似，但保持美观) */
+        .ad-banner {
+            background: rgba(255,255,255,0.6);
+            backdrop-filter: blur(4px);
+            border-radius: 24px;
+            text-align: center;
+            padding: 1rem;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(0,0,0,0.05);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+        }
+        .ad-placeholder {
+            background: #f1f5f9;
+            border-radius: 20px;
+            padding: 0.8rem;
+            font-size: 0.85rem;
+            color: #475569;
+            font-family: monospace;
+        }
+
+        /* 两列布局 */
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 320px;
+            gap: 2rem;
+        }
+
+        /* 左侧主工具区 */
+        .tools-stack {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .tool-card {
+            background: rgba(255,255,255,0.85);
+            backdrop-filter: blur(10px);
+            border-radius: 32px;
+            box-shadow: 0 20px 35px -12px rgba(0,0,0,0.1);
+            transition: all 0.25s ease;
+            border: 1px solid rgba(255,255,255,0.5);
+            overflow: hidden;
+        }
+        .tool-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255,255,255,0.95);
+            box-shadow: 0 25px 40px -14px rgba(0,0,0,0.2);
+        }
+        .card-header {
+            padding: 1.2rem 1.8rem;
+            background: linear-gradient(98deg, #ffffff, #f8fafc);
+            border-bottom: 1px solid #eef2ff;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .card-header i {
+            font-size: 2rem;
+            background: linear-gradient(120deg, #3B82F6, #A855F7);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+        .card-header h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #0f172a;
+        }
+        .card-body {
+            padding: 1.8rem;
+        }
+
+        /* 输入控件 */
+        input, textarea {
+            width: 100%;
+            padding: 0.9rem 1rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 24px;
+            font-family: monospace;
+            font-size: 0.95rem;
+            background: #fff;
+            transition: 0.2s;
+        }
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #8b5cf6;
+            box-shadow: 0 0 0 3px rgba(139,92,246,0.2);
+        }
+
+        .btn-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin: 1.2rem 0 0.8rem 0;
+        }
+        .btn {
+            padding: 0.6rem 1.3rem;
+            border-radius: 40px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: 0.2s;
+            background: #f1f5f9;
+            color: #1e293b;
+        }
+        .btn-primary {
+            background: linear-gradient(100deg, #3B82F6, #8B5CF6);
+            color: white;
+            box-shadow: 0 4px 9px rgba(59,130,246,0.3);
+        }
+        .btn-primary:hover {
+            transform: scale(0.97);
+            opacity: 0.9;
+        }
+        .btn-outline {
+            border: 1px solid #cbd5e1;
+            background: white;
+        }
+        .btn-outline:hover {
+            background: #f8fafc;
+        }
+
+        .result-area {
+            background: #fef9e3;
+            border-radius: 24px;
+            padding: 1rem 1.2rem;
+            margin-top: 1rem;
+            border-left: 5px solid #f59e0b;
+            font-family: 'Courier New', monospace;
+            word-break: break-word;
+        }
+
+        /* Bug概率专用 */
+        .bug-meter {
+            background: #eef2ff;
+            border-radius: 40px;
+            height: 14px;
+            width: 100%;
+            margin: 1rem 0;
+            overflow: hidden;
+        }
+        .bug-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #f97316, #dc2626);
+            border-radius: 40px;
+            transition: width 0.5s ease;
+        }
+        .bug-comment {
+            font-weight: 600;
+            margin: 0.5rem 0;
+        }
+
+        /* 侧边栏 */
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 1.8rem;
+        }
+        .side-card {
+            background: rgba(255,255,255,0.8);
+            backdrop-filter: blur(8px);
+            border-radius: 28px;
+            padding: 1.2rem 1.5rem;
+            box-shadow: 0 12px 24px -12px rgba(0,0,0,0.08);
+            border: 1px solid rgba(255,255,255,0.6);
+        }
+        .ad-sidebar {
+            text-align: center;
+        }
+        .fake-ad {
+            background: #eef2ff;
+            min-height: 220px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            color: #4a5568;
+            margin-top: 10px;
+        }
+
+        .lucky-tag {
+            background: linear-gradient(120deg, #fef9c3, #fde68a);
+            border-radius: 60px;
+            padding: 1rem;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .lucky-tag:hover {
+            transform: scale(0.98);
+        }
+
+        footer {
+            margin-top: 3rem;
+            text-align: center;
+            font-size: 0.8rem;
+            color: #4b5563;
+            border-top: 1px solid #cbd5e1;
+            padding: 1.5rem;
+        }
+
+        @media (max-width: 900px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+            .hero h1 {
+                font-size: 2rem;
+            }
+        }
+
+        .toast-msg {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            background: #1e293b;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 60px;
+            font-size: 0.85rem;
+            z-index: 2000;
+            opacity: 0;
+            transition: 0.2s;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- 顶部趣味文案 -->
+    <div class="hero">
+        <h1><i class="fas fa-hat-wizard"></i> 码上灵·实验室</h1>
+        <p>代码情书｜Bug运势｜命名灵感｜今日玄学彩蛋 ✨</p>
+        <div class="hero-badge"><i class="fas fa-magic"></i> 生成专属卡片 · 分享好运</div>
+    </div>
+
+    <!-- 顶部广告位（替换为真实 AdSense 代码） -->
+    <div class="ad-banner">
+        <div class="ad-placeholder">
+            <i class="fas fa-ad"></i> 推荐广告位（728×90 或自适应）<br>
+            [ 请在此处放入 Google AdSense 代码 ]
+        </div>
+    </div>
+
+    <div class="main-grid">
+        <!-- 左侧主要趣味工具 -->
+        <div class="tools-stack">
+            <!-- 工具1：代码情书生成器 -->
+            <div class="tool-card">
+                <div class="card-header">
+                    <i class="fas fa-heart"></i>
+                    <h2>💌 代码情书生成器</h2>
+                </div>
+                <div class="card-body">
+                    <input type="text" id="crushName" placeholder="输入 TA 的名字，例如 小鹿、Coding Cat" value="柚子">
+                    <div class="btn-group">
+                        <button class="btn btn-primary" id="genLoveLetterBtn"><i class="fas fa-code-branch"></i> 生成浪漫情书</button>
+                        <button class="btn btn-outline" id="copyLoveLetterBtn"><i class="far fa-copy"></i> 复制分享文案</button>
+                    </div>
+                    <div class="result-area" id="loveLetterResult">
+                        <i class="fas fa-heartbeat"></i> 点击生成，一段优雅的伪代码情书将出现在这里。
+                    </div>
+                </div>
+            </div>
+
+            <!-- 工具2：Bug概率计算器（趣味运势） -->
+            <div class="tool-card">
+                <div class="card-header">
+                    <i class="fas fa-bug"></i>
+                    <h2>🐞 Bug 占卜屋 · 今日运势</h2>
+                </div>
+                <div class="card-body">
+                    <div class="bug-meter">
+                        <div class="bug-fill" id="bugFillBar" style="width: 0%;"></div>
+                    </div>
+                    <div id="bugPercentage" class="bug-comment">点击占卜今天的 Bug 概率～</div>
+                    <div class="btn-group">
+                        <button class="btn btn-primary" id="rollBugBtn"><i class="fas fa-dice-d6"></i> 占卜今日Bug指数</button>
+                        <button class="btn btn-outline" id="copyBugFortuneBtn"><i class="fas fa-share-alt"></i> 复制运势卡片</button>
+                    </div>
+                    <div class="result-area" id="bugCommentArea">
+                        🌟 点击占卜，获取今日程序员专属幸运签。
+                    </div>
+                </div>
+            </div>
+
+            <!-- 工具3：变量命名救星 -->
+            <div class="tool-card">
+                <div class="card-header">
+                    <i class="fas fa-i-cursor"></i>
+                    <h2>📝 变量命名救星</h2>
+                </div>
+                <div class="card-body">
+                    <input type="text" id="chineseWord" placeholder="输入中文词汇，例如：用户列表、数据缓存">
+                    <div class="btn-group">
+                        <button class="btn btn-primary" id="generateVarBtn"><i class="fas fa-magic"></i> 生成命名推荐</button>
+                        <button class="btn btn-outline" id="copyVarBtn"><i class="far fa-copy"></i> 复制命名结果</button>
+                    </div>
+                    <div class="result-area" id="varResult">
+                        <i class="fas fa-lightbulb"></i> 驼峰、蛇形、常量风格自动推荐。
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 右侧边栏：广告位 + 彩蛋今日幸运 -->
+        <div class="sidebar">
+            <!-- 广告位1 -->
+            <div class="side-card ad-sidebar">
+                <div class="ad-title"><i class="fas fa-chart-line"></i> 赞助商广告</div>
+                <div class="fake-ad">
+                    📢 300x250 广告位 <br>
+                    替换为 AdSense 代码
+                </div>
+            </div>
+            <!-- 每日玄学彩蛋 (点击互动) -->
+            <div class="side-card lucky-tag" id="luckyBox">
+                <i class="fas fa-crystal-ball fa-2x"></i>
+                <h3 style="margin: 8px 0;">🎲 今日幸运签</h3>
+                <p id="luckyContent">点击抽取幸运数字 & 颜色</p>
+                <small><i class="fas fa-mouse-pointer"></i> 点击刷新运势</small>
+            </div>
+            <!-- 额外小广告 -->
+            <div class="side-card">
+                <h4><i class="fas fa-chart-simple"></i> 极客小贴士</h4>
+                <p style="font-size:0.85rem;">✨ 所有工具都在本地运行，无隐私收集。生成有趣内容后截图分享，好运加倍！</p>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>⚡ 码上灵实验室 · 纯前端趣味工具 | 广告仅用于维持服务器 | 分享开心，消除Bug 🧹</p>
+        <p><a href="#" id="privacyTrigger" style="color:#3b82f6;">隐私说明</a> | 灵感源于极客社区</p>
+    </footer>
+</div>
+
+<div id="toastMessage" class="toast-msg">复制成功！</div>
+
+<script>
+    // 辅助函数：显示浮动提示
+    function showToast(msg) {
+        const toast = document.getElementById('toastMessage');
+        toast.textContent = msg;
+        toast.style.opacity = '1';
+        setTimeout(() => {
+            toast.style.opacity = '0';
+        }, 2000);
+    }
+
+    // 复制文本通用
+    async function copyText(text, successMsg = "已复制到剪贴板") {
+        if (!text) { showToast("无内容可复制"); return false; }
+        try {
+            await navigator.clipboard.writeText(text);
+            showToast(successMsg);
+            return true;
+        } catch(e) {
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+            showToast(successMsg);
+            return true;
+        }
+    }
+
+    // ---------------- 1. 代码情书生成器 ----------------
+    const loveLettersDB = [
+        (name) => `const love = { you: "${name}", status: "committed" };\nwhile(true) { console.log(\`I ❤️ ${name}\`); }`,
+        (name) => `function myHeart() { return "${name} is the best exception ever thrown into my life."; }`,
+        (name) => `if (you == "${name}") { return "2025-∞: no bugs, only love"; } else { throw new Error("找不到真爱") }`,
+        (name) => `git commit -m "✨ 为 ${name} 献上永不回滚的爱" && git push origin heart`,
+        (name) => `class LoveLetter {\n  constructor(name) { this.name = name; }\n  feel() { return \`${name} 是我代码里最完美的注释\`; }\n}`,
+        (name) => `const ${name.toUpperCase()}_LOVE = 0x3e8;\nfor(let day=0; day<Infinity; day++) { cherish("${name}"); }`
+    ];
+    function generateLoveLetter(name) {
+        const idx = Math.floor(Math.random() * loveLettersDB.length);
+        let letter = loveLettersDB[idx](name);
+        return `💌 给 ${name} 的极客气泡情书：\n\`\`\`javascript\n${letter}\n\`\`\`\n「悄悄话：这段代码永不报错，因为你是我的最优解」`;
+    }
+
+    const crushInput = document.getElementById('crushName');
+    const loveResultDiv = document.getElementById('loveLetterResult');
+    const genLoveBtn = document.getElementById('genLoveLetterBtn');
+    const copyLoveBtn = document.getElementById('copyLoveLetterBtn');
+    let currentLoveLetter = "";
+
+    genLoveBtn.addEventListener('click', () => {
+        let name = crushInput.value.trim();
+        if (name === "") name = "未知星尘";
+        currentLoveLetter = generateLoveLetter(name);
+        loveResultDiv.innerHTML = `<i class="fas fa-heart" style="color:#ec4899;"></i> ${currentLoveLetter.replace(/\n/g, '<br>')}`;
+    });
+    copyLoveBtn.addEventListener('click', () => {
+        if (!currentLoveLetter) { showToast("请先生成一份情书"); return; }
+        copyText(currentLoveLetter, "💌 情书文案已复制，快去表白/分享～");
+    });
+
+    // ---------------- 2. Bug 概率计算器 + 运势文案 ----------------
+    const bugFill = document.getElementById('bugFillBar');
+    const bugPercentageSpan = document.getElementById('bugPercentage');
+    const bugCommentDiv = document.getElementById('bugCommentArea');
+    const rollBugBtn = document.getElementById('rollBugBtn');
+    const copyBugBtn = document.getElementById('copyBugFortuneBtn');
+    let currentBugResult = { percent: 0, comment: "", fortune: "" };
+
+    const bugComments = [
+        (p) => p < 20 ? "✨ 欧皇附体！今天只有小虫，无伤大雅~" :
+                  p < 50 ? "😌 中等bug率，记得多写测试用例哦" :
+                  p < 80 ? "⚠️ 小心！今天重构需加护卫队！" : "💀 高危预警：建议今天是code review日！"
+    ];
+    const fortunePool = ["🧧 幸运数字 7，颜色 #3B82F6", "🍀 绿色护眼，bug远离", "🎯 今日锦鲤色 #F59E0B", "⚡ 银色代码侠，无bug之夜", "💎 紫气东来，修复bug如砍瓜切菜"];
+
+    function computeBugFortune() {
+        const percent = Math.floor(Math.random() * 101);
+        let comment = "";
+        if (percent < 20) comment = "🎉 几乎无bug！可以摸鱼写情书";
+        else if (percent < 45) comment = "🐞 有几只小虫，easy fix";
+        else if (percent < 70) comment = "🐛 bug中等密度，建议写单元测试";
+        else if (percent < 90) comment = "🤯 灵异bug出没！请找产品经理要需求文档";
+        else comment = "🔥 火葬场概率，记得备份git commit";
+        const randomFortune = fortunePool[Math.floor(Math.random() * fortunePool.length)];
+        return { percent, comment, fortune: randomFortune };
+    }
+
+    function updateBugUI() {
+        bugFill.style.width = currentBugResult.percent + "%";
+        bugPercentageSpan.innerHTML = `🐞 Bug 概率: ${currentBugResult.percent}%   ${currentBugResult.comment}`;
+        bugCommentDiv.innerHTML = `<i class="fas fa-chart-line"></i> 运势提醒：${currentBugResult.fortune}<br>📌 建议：${currentBugResult.comment}`;
+    }
+
+    rollBugBtn.addEventListener('click', () => {
+        currentBugResult = computeBugFortune();
+        updateBugUI();
+    });
+    copyBugBtn.addEventListener('click', () => {
+        if (currentBugResult.percent === undefined) { showToast("请先占卜今日Bug指数"); return; }
+        const shareText = `【程序员Bug运势】\n今日Bug概率：${currentBugResult.percent}%\n评价：${currentBugResult.comment}\n幸运彩蛋：${currentBugResult.fortune}\n——来自「码上灵实验室」`;
+        copyText(shareText, "🐞 运势卡片已复制，可分享朋友圈");
+    });
+
+    // 初始随机一次
+    (function initBug() {
+        currentBugResult = computeBugFortune();
+        updateBugUI();
+    })();
+
+    // ---------------- 3. 变量命名救星 (简易字典+智能映射) ----------------
+    const chineseInput = document.getElementById('chineseWord');
+    const varResultDiv = document.getElementById('varResult');
+    const genVarBtn = document.getElementById('generateVarBtn');
+    const copyVarBtn = document.getElementById('copyVarBtn');
+    let currentVarNames = "";
+
+    // 简单拼音映射库 + 翻译规则库（实际用简易关键词映射 + 降级）
+    const wordMap = {
+        "用户": "user", "列表": "list", "数据": "data", "缓存": "cache", "请求": "request",
+        "响应": "response", "配置": "config", "颜色": "color", "名字": "name", "年龄": "age",
+        "文件": "file", "上传": "upload", "下载": "download", "令牌": "token", "错误": "error",
+        "信息": "info", "登录": "login", "注册": "register", "按钮": "button"
+    };
+    function chineseToVarName(raw) {
+        let text = raw.trim().toLowerCase();
+        if (wordMap[text]) return wordMap[text];
+        // 如果没有匹配，用简单拼音直译（模拟：取拼音首字母组合）
+        // 简单粗暴：移除中文，留英文部分，否则转成拼音首字母
+        if (/[\u4e00-\u9fa5]/.test(text)) {
+            // 转换第一个字拼音首字母逻辑? 为了趣味演示，简单拼接 "var_" + 原词拼音缩写
+            let piny = text.replace(/[\u4e00-\u9fa5]/g, (match) => {
+                return match.charCodeAt(0).toString(16).slice(0,2); // 随便搞点字母艺术
+            });
+            return "var_" + piny.slice(0,6);
+        }
+        // 保留英文
+        return text.replace(/\s/g, '_');
+    }
+
+    function generateNames(chinese) {
+        if (!chinese) return "请输入中文词汇";
+        const base = chineseToVarName(chinese);
+        const camel = base.charAt(0).toLowerCase() + base.slice(1).replace(/[^a-zA-Z0-9]/g, '');
+        const pascal = camel.charAt(0).toUpperCase() + camel.slice(1);
+        const snake = base.toLowerCase().replace(/[^a-z0-9]/g, '_');
+        const constant = snake.toUpperCase();
+        return `✨ 命名灵感 ✨\n🐫 驼峰: ${camel}\n📦 大驼峰: ${pascal}\n🐍 蛇形: ${snake}\n🔝 常量: ${constant}`;
+    }
+
+    genVarBtn.addEventListener('click', () => {
+        let word = chineseInput.value.trim();
+        if (word === "") word = "极客";
+        currentVarNames = generateNames(word);
+        varResultDiv.innerHTML = `<i class="fas fa-check-circle"></i> ${currentVarNames.replace(/\n/g, '<br>')}`;
+    });
+    copyVarBtn.addEventListener('click', () => {
+        if (!currentVarNames || currentVarNames.includes("请输入")) { showToast("请先生成变量名"); return; }
+        copyText(currentVarNames, "📋 命名已复制");
+    });
+
+    // ---------- 彩蛋：今日幸运数字/颜色（右侧悬浮点击）----------
+    const luckyBox = document.getElementById('luckyBox');
+    const luckyContent = document.getElementById('luckyContent');
+    function refreshLucky() {
+        const rNum = Math.floor(Math.random() * 100);
+        const colors = ["#FF6B6B", "#4ECDC4", "#FFE66D", "#BF8AF0", "#FF9F1C"];
+        const randColor = colors[Math.floor(Math.random() * colors.length)];
+        luckyContent.innerHTML = `<span style="font-size:1.3rem;">✨ 幸运数字 ${rNum}</span><br>🎨 幸运色：<span style="color:${randColor};">${randColor}</span>`;
+        luckyBox.style.background = `linear-gradient(135deg, ${randColor}20, #fef9e3)`;
+    }
+    luckyBox.addEventListener('click', refreshLucky);
+    refreshLucky(); // 初始
+
+    // 简易隐私弹窗
+    document.getElementById('privacyTrigger').addEventListener('click', (e) => {
+        e.preventDefault();
+        alert("🔒 隐私说明：本工具所有数据均在您浏览器本地运算，绝不收集个人信息。广告由第三方平台展示，我们的目的是维持免费服务。感谢支持！");
+    });
+
+    // 欢迎彩蛋小提醒
+    setTimeout(() => {
+        showToast("✨ 试试点击「今日幸运签」！");
+    }, 1500);
+</script>
+</body>
+</html>
